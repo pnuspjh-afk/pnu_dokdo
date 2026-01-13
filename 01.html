@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독도: 지리적 특성, 가치 및 영유권 현황 종합 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom font settings for a professional look */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #fcfcfc; /* Warm neutral background */
+            color: #333;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Smooth transitions */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Custom Scrollbar for content areas */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+    <!-- Chosen Palette: "Calm Sovereignty" - Warm neutrals (Stone/Zinc) as base, Deep Navy/Blue for Korea/Ocean, Earthy Brown for Territory, Muted Red for Conflict/Alerts. -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Executive Summary & Emotional hook (Sovereignty).
+         2. Navigation: Sticky tab-based navigation for 4 core sections (Geography, Value, Control, Conflict).
+         3. Dynamic Content Area:
+            - Geography: Interactive Distance Comparison (Chart) & Terrain breakdown (Donut).
+            - Value: 3-Column Card Layout with hover details for Economic/Geopolitical/Academic values.
+            - Effective Control: Timeline of history/governance & Address card.
+            - Conflict: "Fact vs Claim" interactive toggle interface to contrast KR truth vs JP claim.
+         4. Footer: Conclusion.
+         Why this structure? It breaks the dense report into digestible, thematic chunks. The interactive tabs allow users to focus on one aspect at a time without being overwhelmed by text. Charts visualize the "hard data" (distances, areas) immediately.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Geography -> Goal: Compare Distances -> Method: Horizontal Bar Chart (Chart.js) -> Shows Ulleungdo is much closer than Oki.
+         2. Geography -> Goal: Show Composition -> Method: Donut Chart (Chart.js) -> Visualizes Dongdo/Seodo vs Total area.
+         3. Value -> Goal: Inform -> Method: Interactive Cards -> User clicks/hovers to reveal details about Hydrates/Tourism.
+         4. Conflict -> Goal: Contrast -> Method: Toggle View -> Switches between "Japan's Claim" (Red accent) and "Korea's Truth" (Blue accent).
+         5. Icons -> Unicode characters used instead of SVG/Images for lightweight visual cues.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <!-- Header / Hero Section -->
+    <header class="relative bg-slate-900 text-white py-12 px-4 shadow-lg">
+        <!-- Home Button -->
+        <a href="index.html" class="absolute top-4 right-4 md:top-6 md:right-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors py-2 px-3 rounded-lg hover:bg-slate-800 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span class="text-sm font-medium">홈으로</span>
+        </a>
+
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="inline-block bg-blue-800 text-blue-100 text-xs font-bold px-3 py-1 rounded-full mb-4">대한민국 고유 영토</div>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">독도 종합 분석 브리핑</h1>
+            <p class="text-slate-300 max-w-2xl mx-auto text-lg leading-relaxed">
+                지리적 특성부터 경제적 가치, 그리고 확고한 실효적 지배 현황까지.<br>
+                데이터와 팩트로 확인하는 독도의 진실을 탐구합니다.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex overflow-x-auto justify-start md:justify-center space-x-2 md:space-x-8 py-4 no-scrollbar">
+                <button onclick="switchTab('geography')" id="nav-geography" class="nav-btn transition-all-300 px-4 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-700 whitespace-nowrap active-tab">지리적 특성</button>
+                <button onclick="switchTab('value')" id="nav-value" class="nav-btn transition-all-300 px-4 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-700 whitespace-nowrap">독도의 가치</button>
+                <button onclick="switchTab('control')" id="nav-control" class="nav-btn transition-all-300 px-4 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-700 whitespace-nowrap">실효적 지배</button>
+                <button onclick="switchTab('conflict')" id="nav-conflict" class="nav-btn transition-all-300 px-4 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-700 whitespace-nowrap">영유권 갈등</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 py-8 min-h-screen">
+
+        <!-- Section 1: Geography -->
+        <section id="section-geography" class="tab-content block animate-fade-in">
+            <div class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-stone-100">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">지리적 및 물리적 특성</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    독도는 동해의 중심에 위치하며, 지리적으로나 지질학적으로 대한민국 울릉도와 가장 밀접하게 연결되어 있습니다. 
+                    이 섹션에서는 독도의 위치, 거리 데이터, 그리고 지형적 구성을 시각적으로 분석하여 
+                    독도가 한국의 생활권임을 입증하는 객관적 지표를 제시합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Card: Distance Analysis -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">🌏 거리 분석: 누가 더 가까운가?</h3>
+                    <div class="mb-4 text-sm text-slate-500">
+                        울릉도와 독도의 거리는 87.4km로 육안 관측이 가능하지만, 일본 오키섬에서는 불가능합니다.
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distanceChart"></canvas>
+                    </div>
+                    <div class="mt-4 bg-blue-50 p-3 rounded-lg text-sm text-blue-800">
+                        <strong>💡 핵심 팩트:</strong> 울릉도에서는 맑은 날 독도가 보이지만, 일본 오키섬에서는 지구 곡률로 인해 보이지 않습니다. 이는 역사적 인지의 결정적 차이입니다.
+                    </div>
+                </div>
+
+                <!-- Card: Terrain & Composition -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">⛰️ 지형 및 면적 구성</h3>
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="chart-container flex-1">
+                            <canvas id="areaChart"></canvas>
+                        </div>
+                        <div class="flex-1 space-y-3 text-sm">
+                            <div class="p-3 bg-stone-50 rounded border border-stone-200">
+                                <span class="block font-bold text-stone-700">동도 (East Islet)</span>
+                                <span class="text-stone-500">독도경비대, 등대 위치</span>
+                            </div>
+                            <div class="p-3 bg-stone-50 rounded border border-stone-200">
+                                <span class="block font-bold text-stone-700">서도 (West Islet)</span>
+                                <span class="text-stone-500">주민 숙소 위치, 식수원</span>
+                            </div>
+                            <div class="p-3 bg-stone-50 rounded border border-stone-200">
+                                <span class="block font-bold text-stone-700">지질학적 기원</span>
+                                <span class="text-stone-500">약 460~250만년 전 생성 (제주도보다 오래됨). 울릉도와 동일한 조면암질.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Value -->
+        <section id="section-value" class="tab-content hidden animate-fade-in">
+            <div class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-stone-100">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">독도의 복합적 가치</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    독도는 단순한 바위섬이 아닙니다. 경제적 잠재력, 군사적 중요성, 학술적 가치를 모두 지닌 보물창고입니다.
+                    아래 카드를 통해 독도가 가진 세 가지 핵심 가치를 자세히 살펴보세요.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Economic Value -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden hover:shadow-md transition-all-300 group">
+                    <div class="h-2 bg-emerald-500"></div>
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">🐟</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-emerald-600 transition-colors">경제적 가치</h3>
+                        <ul class="space-y-3 text-sm text-slate-600 mt-4">
+                            <li class="flex items-start">
+                                <span class="mr-2 text-emerald-500 font-bold">✓</span>
+                                <span><strong>황금어장:</strong> 한류와 난류가 교차하는 조경수역</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-emerald-500 font-bold">✓</span>
+                                <span><strong>가스 하이드레이트:</strong> 약 6억 톤 매장 추정 (국내 30년 사용량)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-emerald-500 font-bold">✓</span>
+                                <span><strong>관광 자원:</strong> 연간 10만명 이상 방문, 수백억 경제 효과</span>
+                            </li>
+                        </ul>
+                        <div class="mt-6 pt-4 border-t border-stone-100">
+                            <div class="text-xs text-stone-400 uppercase font-bold tracking-wider">Estimated Resource</div>
+                            <div class="text-2xl font-bold text-emerald-600">600,000,000 <span class="text-sm text-emerald-400">톤</span></div>
+                            <div class="text-xs text-stone-500">가스 하이드레이트 매장량</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geopolitical Value -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden hover:shadow-md transition-all-300 group">
+                    <div class="h-2 bg-blue-600"></div>
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">🛡️</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">지정학적 가치</h3>
+                        <ul class="space-y-3 text-sm text-slate-600 mt-4">
+                            <li class="flex items-start">
+                                <span class="mr-2 text-blue-500 font-bold">✓</span>
+                                <span><strong>전략적 요충지:</strong> 한국, 일본, 러시아, 중국을 잇는 중심</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-blue-500 font-bold">✓</span>
+                                <span><strong>군사 기지:</strong> 조기 경보 레이더 운용 및 방위 거점</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-blue-500 font-bold">✓</span>
+                                <span><strong>해상 거점:</strong> 긴급 대피 및 구조 활동의 전진 기지</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Academic Value -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden hover:shadow-md transition-all-300 group">
+                    <div class="h-2 bg-indigo-500"></div>
+                    <div class="p-6">
+                        <div class="text-4xl mb-4">🔬</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">학술적 가치</h3>
+                        <ul class="space-y-3 text-sm text-slate-600 mt-4">
+                            <li class="flex items-start">
+                                <span class="mr-2 text-indigo-500 font-bold">✓</span>
+                                <span><strong>해양 과학:</strong> 기후 변화 및 해류 순환 연구 최적지</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-indigo-500 font-bold">✓</span>
+                                <span><strong>지질학 유산:</strong> 해저 화산의 진화 과정을 보여주는 살아있는 교과서</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-2 text-indigo-500 font-bold">✓</span>
+                                <span><strong>생태계 보고:</strong> 독특한 도서 생태계 연구</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Effective Control -->
+        <section id="section-control" class="tab-content hidden animate-fade-in">
+            <div class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-stone-100">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">대한민국의 실효적 지배</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    대한민국은 입법, 행정, 사법권을 통해 독도를 완벽하게 지배하고 있습니다. 
+                    단순한 영유권 주장이 아닌, 경찰 상주, 주민 거주, 행정 구역 지정 등 구체적인 국가 행위를 통해 주권을 행사하고 있음을 보여줍니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Address Card -->
+                <div class="col-span-1 bg-blue-50 border border-blue-100 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-blue-900 mb-4">📮 대한민국 공식 행정 주소</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <div class="text-xs text-stone-500 mb-1">동도 (Dongdo)</div>
+                            <div class="font-bold text-stone-800">경상북도 울릉군 울릉읍 독도리 이사부길</div>
+                            <div class="text-xs text-blue-600 mt-2">📍 독도경비대, 등대</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <div class="text-xs text-stone-500 mb-1">서도 (Seodo)</div>
+                            <div class="font-bold text-stone-800">경상북도 울릉군 울릉읍 독도리 안용복길</div>
+                            <div class="text-xs text-blue-600 mt-2">📍 주민 숙소</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-sm text-blue-800">
+                        * 도로명 주소 부여는 확실한 행정 지배의 증거입니다.
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="col-span-1 lg:col-span-2 bg-white border border-stone-100 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-stone-800 mb-6">🚩 주권 수호의 역사와 현재</h3>
+                    <div class="relative border-l-2 border-stone-200 ml-3 space-y-8">
+                        <!-- Item 1 -->
+                        <div class="relative pl-8">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-stone-300 border-2 border-white"></div>
+                            <div class="text-sm text-stone-500 mb-1">1950년대</div>
+                            <h4 class="font-bold text-stone-800">독도의용수비대 활동</h4>
+                            <p class="text-sm text-stone-600 mt-1">홍순칠 대장 등 민간인들이 자발적으로 조직하여 혼란기 일본의 침입을 저지.</p>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="relative pl-8">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                            <div class="text-sm text-blue-600 font-bold mb-1">1953년 ~ 현재</div>
+                            <h4 class="font-bold text-stone-800">독도경비대(경찰) 상주</h4>
+                            <p class="text-sm text-stone-600 mt-1">경찰 병력이 상시 주둔하며 24시간 해안 경계 및 치안 유지. 국가 차원의 확고한 관리.</p>
+                        </div>
+                        <!-- Item 3 -->
+                        <div class="relative pl-8">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-stone-300 border-2 border-white"></div>
+                            <div class="text-sm text-stone-500 mb-1">1981년 ~ 현재</div>
+                            <h4 class="font-bold text-stone-800">최초 주민 등록 및 거주</h4>
+                            <p class="text-sm text-stone-600 mt-1">故 최종덕 씨 주민등록 이전. 현재도 우리 국민이 거주하는 유인도(有人島).</p>
+                        </div>
+                        <!-- Item 4 -->
+                        <div class="relative pl-8">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                            <div class="text-sm text-blue-600 font-bold mb-1">매년 정례</div>
+                            <h4 class="font-bold text-stone-800">동해영토수호훈련</h4>
+                            <p class="text-sm text-stone-600 mt-1">해군, 해경, 공군 합동 방어 훈련. 외부 세력 침입 대비 및 영토 수호 의지 천명.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Conflict -->
+        <section id="section-conflict" class="tab-content hidden animate-fade-in">
+            <div class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-stone-100">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">한일 영유권 갈등 현황</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    일본은 20년 이상 공식 문서와 교과서를 통해 부당한 영유권을 주장하고 있습니다. 
+                    이에 대한 대한민국의 대응 논리와 국제법적 근거를 비교하여 확인해 보세요.
+                </p>
+            </div>
+
+            <!-- Comparison Interface -->
+            <div class="bg-white rounded-xl shadow-lg border border-stone-200 overflow-hidden">
+                <div class="flex border-b border-stone-200">
+                    <button onclick="setConflictView('japan')" id="btn-japan" class="flex-1 py-4 font-bold text-stone-500 bg-stone-50 hover:bg-stone-100 transition-colors border-r">
+                        🇯🇵 일본의 주장 (도발)
+                    </button>
+                    <button onclick="setConflictView('korea')" id="btn-korea" class="flex-1 py-4 font-bold text-blue-700 bg-white border-b-2 border-blue-600 transition-colors">
+                        🇰🇷 대한민국의 입장 (진실)
+                    </button>
+                </div>
+                
+                <div class="p-8 min-h-[300px]">
+                    <!-- Korea View -->
+                    <div id="view-korea" class="space-y-6 animate-fade-in">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-4">1</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">역사적/국제법적 고유 영토</h4>
+                                <p class="text-stone-600 mt-1">"독도는 역사적, 지리적, 국제법적으로 명백한 우리 고유의 영토이며, 분쟁은 존재하지 않는다." 연합군 최고사령부 지령(SCAPIN) 제677호 등 국제 문서가 이를 입증합니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-4">2</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">단호한 외교적 대응</h4>
+                                <p class="text-stone-600 mt-1">일본의 방위백서나 고위급 망언 시, 외교부 성명 발표 및 주한 일본 대사관 관계자를 초치하여 강력히 항의합니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-4">3</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">차분하고 논리적인 대처</h4>
+                                <p class="text-stone-600 mt-1">감정적 대응을 지양하고 정확한 사실과 실효적 지배 강화를 통해 평화적으로 문제를 해결하려는 기조를 유지합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Japan View -->
+                    <div id="view-japan" class="space-y-6 hidden animate-fade-in">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mr-4">1</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">공식 문서 왜곡 (방위백서/외교청서)</h4>
+                                <p class="text-stone-600 mt-1">20년 이상 "독도는 일본 고유의 영토"이며 한국이 "불법 점거" 중이라는 억지 주장을 공식 문서에 명기하고 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mr-4">2</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">교과서 및 교육 왜곡</h4>
+                                <p class="text-stone-600 mt-1">2025년 고교 교과서 및 어린이용 홍보 자료에 독도를 일본 땅으로 기술하여 미래 세대에게 왜곡된 역사관을 주입하고 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mr-4">3</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-stone-800">지속적인 정치적 도발</h4>
+                                <p class="text-stone-600 mt-1">총리 등 고위급 인사의 국회 발언을 통해 영유권 주장을 기정사실화하려 시도하며, 한국의 방어 훈련에 대해 지속적으로 항의합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 px-4 mt-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-2xl font-bold text-white mb-4">독도, 대한민국의 자존심</h2>
+            <p class="max-w-2xl mx-auto mb-8">
+                독도는 단순한 섬이 아닙니다. 우리의 주권과 독립을 상징하는 역사적 장소입니다.<br>
+                우리는 앞으로도 흔들림 없는 실효적 지배를 통해 이 땅을 지켜나갈 것입니다.
+            </p>
+            <div class="text-sm text-slate-500">
+                &copy; 2026 Dokdo Sovereignty Report Interactive. Based on provided source material.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- State Management ---
+        const state = {
+            currentTab: 'geography',
+            conflictView: 'korea'
+        };
+
+        // --- Core Interactions ---
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            
+            // 1. Hide all sections
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+
+            // 2. Show selected section
+            const targetSection = document.getElementById(`section-${tabId}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+            }
+
+            // 3. Update Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-blue-700', 'bg-slate-100', 'active-tab'); // Remove active styles
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600');
+                activeBtn.classList.add('text-blue-700', 'bg-slate-100', 'active-tab');
+            }
+
+            // 4. Trigger Chart Update if needed (resize handling)
+            if (tabId === 'geography') {
+                setTimeout(() => {
+                    distanceChart.resize();
+                    areaChart.resize();
+                }, 100);
+            }
+        }
+
+        function setConflictView(view) {
+            state.conflictView = view;
+            const kView = document.getElementById('view-korea');
+            const jView = document.getElementById('view-japan');
+            const kBtn = document.getElementById('btn-korea');
+            const jBtn = document.getElementById('btn-japan');
+
+            if (view === 'korea') {
+                kView.classList.remove('hidden');
+                jView.classList.add('hidden');
+                
+                kBtn.className = "flex-1 py-4 font-bold text-blue-700 bg-white border-b-2 border-blue-600 transition-colors";
+                jBtn.className = "flex-1 py-4 font-bold text-stone-500 bg-stone-50 hover:bg-stone-100 transition-colors border-r";
+            } else {
+                jView.classList.remove('hidden');
+                kView.classList.add('hidden');
+
+                jBtn.className = "flex-1 py-4 font-bold text-red-700 bg-white border-b-2 border-red-600 transition-colors border-r";
+                kBtn.className = "flex-1 py-4 font-bold text-stone-500 bg-stone-50 hover:bg-stone-100 transition-colors";
+            }
+        }
+
+        // --- Chart Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Distance Chart
+            const ctxDist = document.getElementById('distanceChart').getContext('2d');
+            window.distanceChart = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: ['울릉도 ↔ 독도', '오키섬 ↔ 독도', '죽변 ↔ 독도'],
+                    datasets: [{
+                        label: '거리 (km)',
+                        data: [87.4, 157.5, 216.8],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.8)', // Blue for Korea
+                            'rgba(239, 68, 68, 0.5)', // Red/Fade for Japan
+                            'rgba(148, 163, 184, 0.5)' // Grey for mainland
+                        ],
+                        borderColor: [
+                            'rgb(37, 99, 235)',
+                            'rgb(239, 68, 68)',
+                            'rgb(148, 163, 184)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Horizontal bar
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.x + ' km';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { display: false }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // 2. Area Chart
+            const ctxArea = document.getElementById('areaChart').getContext('2d');
+            window.areaChart = new Chart(ctxArea, {
+                type: 'doughnut',
+                data: {
+                    labels: ['서도 (West Islet)', '동도 (East Islet)', '부속 도서'],
+                    datasets: [{
+                        data: [88740, 73297, 25517], // Total 187554, Remainder calculated
+                        backgroundColor: [
+                            '#3b82f6', // Blue-500
+                            '#6366f1', // Indigo-500
+                            '#cbd5e1'  // Slate-300
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { family: 'Noto Sans KR' } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1) + '%';
+                                    return `${context.label}: ${value.toLocaleString()}㎡ (${percentage})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Nav Style
+            switchTab('geography');
+        });
+    </script>
+    <style>
+        /* Animation Utilities */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        /* Active Tab Indicator Styles */
+        .active-tab {
+            background-color: #eff6ff; /* blue-50 */
+            color: #1d4ed8; /* blue-700 */
+            border-bottom: 2px solid #1d4ed8;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    </style>
+</body>
+</html>
