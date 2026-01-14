@@ -1,4 +1,67 @@
-<!DOCTYPE html>
+// 1. 웹 앱 접속 시 index.html 파일을 보여주는 함수 (GET 요청 처리)
+function doGet() {
+  return HtmlService.createTemplateFromFile('index')
+      .evaluate()
+      .setTitle('독도 의견 게시판')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+// 2. HTML 폼에서 데이터를 받아 시트에 저장하는 함수
+function saveOpinionToSheet(data) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheets()[0]; // 첫 번째 시트 사용
+
+    // 헤더가 없으면(1행이 비어있으면) 헤더 추가
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['작성일시', '작성자', '내용']);
+    }
+
+    var timestamp = new Date(); // 서버 시간
+    
+    // 데이터 행 추가 [날짜, 작성자, 내용]
+    sheet.appendRow([
+      timestamp,
+      data.writer,
+      data.content
+    ]);
+
+    return "SUCCESS"; // 성공 메시지 반환
+  } catch (e) {
+    return "ERROR: " + e.toString();
+  }
+}
+
+// 3. 시트에 저장된 의견 목록을 가져오는 함수
+function getOpinionsFromSheet() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheets()[0];
+    var lastRow = sheet.getLastRow();
+
+    if (lastRow < 2) return []; // 데이터가 없으면 빈 배열 반환
+
+    // 데이터 범위 읽기 (2행부터 끝까지, 1~3열) -> [날짜, 작성자, 내용]
+    var values = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
+
+    // 데이터를 객체 배열로 변환하고 역순(최신순) 정렬
+    var result = values.map(function(row) {
+      var d = new Date(row[0]);
+      // 날짜 포맷팅 (YYYY년 M월 D일)
+      var dateStr = d.getFullYear() + "년 " + (d.getMonth() + 1) + "월 " + d.getDate() + "일";
+      
+      return {
+        date: dateStr,
+        writer: row[1],
+        content: row[2]
+      };
+    }).reverse();
+
+    return result;
+  } catch (e) {
+    return []; // 에러 시 빈 배열 반환
+  }
+}<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
