@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독도 용어 사전</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #fdfbf7; color: #333; }
+        
+        /* Card Hover Effect */
+        .term-card {
+            transition: all 0.3s ease;
+        }
+        .term-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #3b82f6;
+        }
+        
+        /* Sticky Category Navigation */
+        .category-nav {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE 10+ */
+        }
+        .category-nav::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Webkit */
+        }
+    </style>
+    <!-- Chosen Palette: Consistent with Timeline Page -->
+</head>
+<body class="antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-opacity-90">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md">독</div>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">독도 아카이브</h1>
+            </div>
+            <nav class="flex gap-4 text-sm font-medium text-slate-600">
+                <button onclick="window.location.href='index.html'" class="hover:text-blue-900 transition-colors flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    홈으로
+                </button>
+                <a href="Dokdo_History_Interactive.html" class="hover:text-blue-900 transition-colors hidden sm:block">역사 타임라인</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- Page Title & Intro -->
+        <div class="text-center space-y-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-800">📖 독도 주요 용어 사전</h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                독도는 우리에게 단순한 섬이 아니라 <span class="font-bold text-blue-800">"역사의 거울"</span>과 같습니다.<br>
+                독도와 관련된 핵심 용어들을 통해 지리적, 역사적, 국제법적 의미를 명확히 이해해 보세요.
+            </p>
+        </div>
+
+        <!-- Category Navigation (Sticky) -->
+        <div class="sticky top-16 z-40 bg-[#fdfbf7]/95 backdrop-blur py-2 border-b border-gray-200/50">
+            <div class="flex overflow-x-auto gap-2 category-nav pb-2 sm:justify-center">
+                <button onclick="scrollToCategory('area')" class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all text-sm font-medium shadow-sm">영역 개념</button>
+                <button onclick="scrollToCategory('geo')" class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all text-sm font-medium shadow-sm">지리 및 자원</button>
+                <button onclick="scrollToCategory('name')" class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all text-sm font-medium shadow-sm">역사적 명칭</button>
+                <button onclick="scrollToCategory('record')" class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all text-sm font-medium shadow-sm">주요 사료 및 사건</button>
+                <button onclick="scrollToCategory('people')" class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all text-sm font-medium shadow-sm">단체 및 인물</button>
+            </div>
+        </div>
+
+        <!-- Glossary Content Grid -->
+        <div id="glossary-content" class="space-y-16">
+            <!-- Content will be injected via JS -->
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-20 py-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h5 class="text-white font-bold text-lg mb-4">독도 아카이브</h5>
+            <p class="font-medium mb-2">독도는 역사적, 지리적, 국제법적으로 명백한 대한민국의 영토입니다.</p>
+            <div class="mt-8 flex justify-center gap-4 text-sm">
+                <a href="index.html" class="hover:text-white underline">홈으로</a>
+                <span class="text-slate-600">|</span>
+                <a href="Dokdo_History_Interactive.html" class="hover:text-white underline">역사 타임라인</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Glossary Data ---
+        const glossaryData = [
+            {
+                id: "area",
+                title: "🌐 영역 개념",
+                desc: "국가의 주권이 미치는 범위와 관련된 국제법적 용어들입니다.",
+                items: [
+                    { term: "영토 (Territory)", desc: "국가의 영역이 미치는 지표상의 범위를 의미합니다." },
+                    { term: "영해 (Territorial Sea)", desc: "해안선으로부터 일정한 범위 내에 있는 바다로, 우리나라는 해안선에서 12해리(약 22km)까지를 영해로 규정합니다." },
+                    { term: "영공 (Territorial Air)", desc: "영토와 영해의 수직 상공이며, 보통 대기권 이내를 의미합니다." },
+                    { term: "배타적 경제수역 (EEZ)", desc: "영해 기선에서 200해리까지의 수역으로, 연안국이 자원 탐사·개발·보전·관리권을 갖는 경제적 주권 영역입니다." }
+                ]
+            },
+            {
+                id: "geo",
+                title: "⛰️ 지리 및 자원",
+                desc: "독도의 지질학적 특성과 보유하고 있는 천연 자원에 대한 용어입니다.",
+                items: [
+                    { term: "가스 하이드레이트", desc: "독도 인근 해저에 약 6억 톤이 매장된 것으로 추정되는 차세대 에너지원으로, '불타는 얼음'이라고도 불립니다." },
+                    { term: "조면암", desc: "독도와 울릉도를 구성하는 알칼리성 화산암입니다. 일본 오키섬(편마암)과 지질적 기원이 다름을 보여주는 중요한 증거입니다." }
+                ]
+            },
+            {
+                id: "name",
+                title: "📜 역사적 명칭",
+                desc: "시대의 흐름에 따라 변화해 온 독도의 다양한 이름들입니다.",
+                items: [
+                    { term: "우산도 (于山島)", desc: "삼국시대 우산국에서 유래한 명칭으로, 조선 시대 각종 고지도와 문헌에서 독도를 가리키는 말로 가장 널리 쓰였습니다." },
+                    { term: "가지도 (可支島)", desc: "과거 독도에 많이 서식했던 강치(가제, 가지어)에서 유래한 이름입니다." },
+                    { term: "석도 (石島)", desc: "'돌섬'을 한자로 표기한 것으로, 1900년 대한제국 칙령 제41호에서 독도를 공식 관할 구역으로 명시할 때 사용했습니다." },
+                    { term: "리앙쿠르 (Liancourt)", desc: "1849년 독도를 발견한 프랑스 포경선 리앙쿠르호의 이름을 따서 서양에 알려진 명칭입니다." }
+                ]
+            },
+            {
+                id: "record",
+                title: "📚 주요 사료 및 사건",
+                desc: "독도 영유권을 입증하는 결정적인 역사적 기록과 사건들입니다.",
+                items: [
+                    { term: "태정관 지령 (1877)", desc: "일본 최고 행정기관인 태정관이 '울릉도와 독도는 일본과 관계가 없다'고 공식적으로 인정한 문서입니다." },
+                    { term: "대한제국 칙령 제41호", desc: "1900년 고종 황제가 독도를 울도군(울릉도)의 관할 구역으로 명문화하여 국제적으로 공포한 법령입니다." },
+                    { term: "SCAPIN 제677호", desc: "1946년 연합군 최고사령관이 독도를 일본의 통치 및 행정 범위에서 명확히 제외시킨 각서입니다." },
+                    { term: "평화선 (이승만 라인)", desc: "1952년 대한민국 정부가 선포한 해양 주권선으로, 독도를 포함한 인근 수역에 대한 주권을 확립했습니다." }
+                ]
+            },
+            {
+                id: "people",
+                title: "👥 단체 및 인물",
+                desc: "독도를 지키고 가꾸어 온 사람들의 이야기입니다.",
+                items: [
+                    { term: "독도의용수비대", desc: "6.25 전쟁의 혼란기(1950년대)에 일본의 침탈 시도로부터 독도를 지키기 위해 결성된 순수 민간 대원들입니다." },
+                    { term: "최종덕", desc: "1965년부터 독도에 들어가 생활하다가 1981년 주민등록을 이전하여 최초의 독도 주민이 된 인물입니다." }
+                ]
+            }
+        ];
+
+        // --- Render Function ---
+        function renderGlossary() {
+            const container = document.getElementById('glossary-content');
+            
+            glossaryData.forEach(section => {
+                let itemsHtml = '';
+                section.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="term-card bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-3 group-hover:text-blue-700 transition-colors">${item.term}</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed flex-grow">${item.desc}</p>
+                        </div>
+                    `;
+                });
+
+                const sectionHtml = `
+                    <section id="${section.id}" class="scroll-mt-32">
+                        <div class="mb-6 border-l-4 border-slate-800 pl-4 py-1">
+                            <h3 class="text-2xl font-bold text-slate-800">${section.title}</h3>
+                            <p class="text-slate-500 text-sm mt-1">${section.desc}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            ${itemsHtml}
+                        </div>
+                    </section>
+                `;
+                container.innerHTML += sectionHtml;
+            });
+        }
+
+        // --- Scroll Handler ---
+        function scrollToCategory(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                // Adjust for sticky header height
+                const yOffset = -140; 
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderGlossary);
+
+    </script>
+</body>
+</html>
